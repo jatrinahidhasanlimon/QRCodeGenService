@@ -17,3 +17,4 @@ Route::get('/', function () {
     return view('welcome');
 });
 Route::get('qrcode',[App\Http\Controllers\QRCodeController::class,'index']);
+Route::post('qrcode',[App\Http\Controllers\QRCodeController::class,'store']);
