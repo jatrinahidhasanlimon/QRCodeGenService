@@ -12,9 +12,9 @@ use App\Http\Controllers\QRCodeController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+Route::get('/',[App\Http\Controllers\QRCodeController::class,'index']);
 
-Route::get('/', function () {
-    return view('welcome');
-});
 Route::get('qrcode',[App\Http\Controllers\QRCodeController::class,'index']);
-Route::post('qrcode',[App\Http\Controllers\QRCodeController::class,'store']);
+Route::get('qrcode/create',[App\Http\Controllers\QRCodeController::class,'create']);
+Route::post('qrcode/store',[App\Http\Controllers\QRCodeController::class,'store']);
+

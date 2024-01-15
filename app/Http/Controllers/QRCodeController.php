@@ -26,7 +26,7 @@ class QRCodeController extends Controller
      */
     public function create()
     {
-        //
+        return view('qrcode.create');
     }
 
     /**
@@ -46,8 +46,7 @@ class QRCodeController extends Controller
         $qr_name          = uniqid() . '.svg';
         $qr_img_full_path = $qr_upload_dir . $qr_name;
         $rgb_arr          = [255, 0, 0];
-
-        if ($request['qr_option'] == 'with-logo') {
+        if (isset($request['with_logo'])) {
             $qr_name          = uniqid() . '.png';
             $qr_img_full_path = $qr_upload_dir . $qr_name;
             $qrGen->format('png')
@@ -65,8 +64,6 @@ class QRCodeController extends Controller
             if (count($rgb_arr) == 4) {
                 $qrGen->backgroundColor($rgb_arr[0], $rgb_arr[1], $rgb_arr[2], $rgb_arr[3]);
             }
-
-            $qrGen->backgroundColor($rgb_arr[0], $rgb_arr[1], $rgb_arr[2]);
         }
 
         if ($request['qr_option'] == 'color') {
@@ -81,17 +78,14 @@ class QRCodeController extends Controller
             }
         }
         if ($request['qr_option'] == 'eye-color') {
-
-            if ($request['custom-value']) {
+            $rgb_arr = [0, 255,160,122, 0, 0, 0];
+            if (isset($request['custom-value'])) {
                 $rgb_arr = $this->stringToRGB($request['custom-value']);
-//                dd($rgb_arr);
-                $qrGen->eyeColor($rgb_arr[0], $rgb_arr[1], $rgb_arr[2], $rgb_arr[3], $rgb_arr[4], $rgb_arr[5], $rgb_arr[6]);
-//
             }
-
-//            $qrGen->eyeColor(0, 70, 70, 89, 0, 0, 0);
-
-
+            $qrGen->eyeColor($rgb_arr[0], $rgb_arr[1], $rgb_arr[2], $rgb_arr[3], $rgb_arr[4], $rgb_arr[5], $rgb_arr[6]);
+        }
+        if ($request['qr_option'] == 'dot') {
+            $qrGen->style('dot');
         }
 
         if (isset($request['size'])) {
@@ -99,6 +93,7 @@ class QRCodeController extends Controller
                 $qrGen->size($request['size']);
             }
         }
+
 
 //        $qrGen->eyeColor(0, 255, 255, 255, 0, 0, 0);
 //        $qrGen->eyeColor(0, 255,160,122, 0, 0, 0);
@@ -110,8 +105,8 @@ class QRCodeController extends Controller
         $qr_code_history->image = $qr_name;
         $qr_code_history->save();
 
-        $qr_code_histories = QRCodeHistory::orderBy('created_at', 'desc')->get();
-        return view('qrcode.index', compact('qr_code_histories'));
+        return redirect('/qrcode/create')->with('qr_code_history', $qr_code_history);
+
     }
 
     /**
